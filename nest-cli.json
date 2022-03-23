@@ -1,0 +1,39 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/order/src",
+  "monorepo": true,
+  "root": "apps/order",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/order/tsconfig.app.json"
+  },
+  "projects": {
+    "order": {
+      "type": "application",
+      "root": "apps/order",
+      "entryFile": "main",
+      "sourceRoot": "apps/order/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order/tsconfig.app.json"
+      }
+    },
+    "payment": {
+      "type": "application",
+      "root": "apps/payment",
+      "entryFile": "main",
+      "sourceRoot": "apps/payment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payment/tsconfig.app.json"
+      }
+    },
+    "barista": {
+      "type": "application",
+      "root": "apps/barista",
+      "entryFile": "main",
+      "sourceRoot": "apps/barista/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/barista/tsconfig.app.json"
+      }
+    }
+  }
+}
