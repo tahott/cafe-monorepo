@@ -20,7 +20,7 @@ export class BaristaController {
        * 바리스타는 실제로는 사람이지만 이 시스템에서는 바리스타의 행동을
        * 정의하는 서비스를 따로 두어 바리스타의 행동을 나타내기로 한다
        */
-      BaristaService.insertOrder(JSON.parse(JSON.stringify(originMessage.value)).name)
+      BaristaService.insertOrder(JSON.parse(JSON.stringify(originMessage.value)).order.map(o => ({ name: o.name, amount: o.amount })))
     }
   }
 }

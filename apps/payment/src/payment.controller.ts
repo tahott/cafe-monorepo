@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Controller, Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ClientKafka, Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
 
 

@@ -1,3 +1,4 @@
+import { LocalDateTime } from "@js-joda/core";
 import { Injectable } from "@nestjs/common";
 import { Interval } from "@nestjs/schedule";
 import { BaristaService } from "../barista.service";
@@ -12,23 +13,30 @@ export class TasksService {
       && !BaristaService.currentBaristaWorkState()
     ) {
       BaristaService.setWorkBarista();
-      const menu = BaristaService.shiftOrder();
+      const list = BaristaService.shiftOrder();
 
-      switch (menu) {
-        case 'americano':
-          await this.delay(3000);
-          break;
-        case 'latte':
-          await this.delay(5000);
-          break;
-        default:
-          break;
+      console.log(
+        `Beverage make started at ${LocalDateTime.now()}`
+      );
+
+      for await (const menu of list) {
+        switch (menu.name) {
+          case '아메리카노':
+            await this.delay(3000 * menu.amount);
+            break;
+          case '카페라떼':
+            await this.delay(5000 * menu.amount);
+            break;
+          default:
+            break;
+        }
       }
 
       BaristaService.setWorkBarista();
+
       console.log(
-        `Order completed... ${menu}. ${new Date()}`
-      )
+        `Beverage make completed at ${LocalDateTime.now()}`
+      );
     }
   }
 

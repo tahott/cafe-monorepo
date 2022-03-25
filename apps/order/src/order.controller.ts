@@ -1,18 +1,7 @@
 import { Body, Controller, Get, Inject, OnModuleDestroy, OnModuleInit, Post } from '@nestjs/common';
-import { ClientKafka, Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
+import { OrderRequest } from './order.dto';
 import { OrderService } from './order.service';
-
-class PaymentDto {
-  type: string;
-  code: string;
-}
-
-class OrderDto {
-  name: string
-  size: string
-  amount: number
-  payment: PaymentDto
-}
 
 @Controller('order')
 export class OrderController implements OnModuleInit, OnModuleDestroy {
@@ -35,7 +24,8 @@ export class OrderController implements OnModuleInit, OnModuleDestroy {
   }
 
   @Post()
-  order(@Body() order: OrderDto) {
-    return this.client.send('order', order);
+  order(@Body() order: OrderRequest) {
+    // return order
+    return this.client.send('order', JSON.parse(JSON.stringify(order)));
   }
 }

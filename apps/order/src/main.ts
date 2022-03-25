@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { OrderModule } from './order.module';
@@ -17,6 +18,10 @@ async function bootstrap() {
       },
     },
   });
+
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }));
 
   await app.startAllMicroservices();
 

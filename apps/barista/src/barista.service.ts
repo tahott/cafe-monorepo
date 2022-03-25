@@ -1,10 +1,15 @@
+type MenuList = {
+  name: string,
+  amount: number,
+}
+
 export class BaristaService {
-  static #list: Array<string> = [];
+  static #list: Array<Array<MenuList>> = [];
   static #isMaking = false;
 
   constructor() { }
 
-  static insertOrder(menu: string) {
+  static insertOrder(menu: Array<MenuList>) {
     this.#list.push(menu);
   }
 
