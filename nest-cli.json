@@ -34,6 +34,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/barista/tsconfig.app.json"
       }
+    },
+    "menu": {
+      "type": "library",
+      "root": "libs/menu",
+      "entryFile": "index",
+      "sourceRoot": "libs/menu/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/menu/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+import { Beverage } from "@app/menu/beverage";
 import { LocalDateTime } from "@js-joda/core";
 import { Injectable } from "@nestjs/common";
 import { Interval } from "@nestjs/schedule";
@@ -20,16 +21,7 @@ export class TasksService {
       );
 
       for await (const menu of list) {
-        switch (menu.name) {
-          case '아메리카노':
-            await this.delay(3000 * menu.amount);
-            break;
-          case '카페라떼':
-            await this.delay(5000 * menu.amount);
-            break;
-          default:
-            break;
-        }
+        await this.delay(Beverage.findByname(menu.name) * 1000 * menu.amount);
       }
 
       BaristaService.setWorkBarista();

@@ -25,7 +25,6 @@ export class OrderController implements OnModuleInit, OnModuleDestroy {
 
   @Post()
   order(@Body() order: OrderRequest) {
-    // return order
     return this.client.send('order', JSON.parse(JSON.stringify(order)));
   }
 }
