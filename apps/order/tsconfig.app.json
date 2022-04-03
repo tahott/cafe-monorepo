@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
+    "sourceMap": false,
     "outDir": "../../dist/apps/order"
   },
   "include": ["src/**/*"],

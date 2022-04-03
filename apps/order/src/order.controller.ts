@@ -24,7 +24,8 @@ export class OrderController implements OnModuleInit, OnModuleDestroy {
   }
 
   @Post()
-  order(@Body() order: OrderRequest) {
-    return this.client.send('order', JSON.parse(JSON.stringify(order)));
+  async order(@Body() order: OrderRequest) {
+    return await this.orderService.insertOrder(order.toEntity());
+    // return this.client.send('order', JSON.parse(JSON.stringify(order)));
   }
 }

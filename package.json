@@ -27,13 +27,16 @@
     "@nestjs/microservices": "^8.4.2",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/schedule": "^1.0.2",
+    "@nestjs/typeorm": "^8.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "kafkajs": "^1.16.0",
+    "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "ts-jenum": "^2.2.2"
+    "ts-jenum": "^2.2.2",
+    "typeorm": "^0.3.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
