@@ -1,46 +1,73 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Order as OrderDto } from "./order.dto";
+import { convert, LocalDateTime, nativeJs } from "@js-joda/core";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryColumn, ValueTransformer } from "typeorm";
+import { OrderItemEntity } from "./orderItem.entity";
 
-@Entity()
-class Orders {
-  @PrimaryGeneratedColumn()
-  id: number;
+class DateTimeTransformer implements ValueTransformer {
+  to(entityValue: LocalDateTime): Date {
+    return convert(entityValue).toDate();
+  }
+  from(dbValue: Date) {
+    return LocalDateTime.from(nativeJs(dbValue));
+  }
+}
 
-  @Column()
-  order: string;
+@Entity('order')
+export class OrderEntity {
+  @OneToMany(type => OrderItemEntity, orderItem => orderItem.orderNo)
+  @PrimaryColumn({
+    type: 'nvarchar', length: 12, nullable: false,
+  })
+  no: string;
 
   @Column()
   vendor: string;
   
-  @Column()
+  @Column({ type: 'varchar', length: 100, nullable: false })
   approvalValue: string;
 
-  @Column()
+  @Column({ type: 'bool', nullable: false, default: false })
+  payState: boolean;
+
+  @Column({ type: 'bool', nullable: false, default: false })
   takeout: boolean;
 
-  @Column()
-  createdAt: Date;
+  @Column({
+    type: 'timestamp',
+    transformer: new DateTimeTransformer(),
+    nullable: false,
+  })
+  createdAt: LocalDateTime;
 
-  @Column()
-  updatedAt: Date;
+  @Column({
+    type: 'timestamp',
+    transformer: new DateTimeTransformer(),
+    nullable: false,
+  })
+  updatedAt: LocalDateTime;
+
+  @BeforeInsert()
+  protected beforeInsert() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = this.createdAt;
+  }
+
+  @BeforeUpdate()
+  protected beforeUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 
   static new(
-    orderDto: OrderDto[],
     vendor: string,
     approvalValue: string,
     takeout: boolean,
   ) {
-    const order = new Orders();
+    const order = new OrderEntity();
 
-    order.order = JSON.stringify(orderDto);
     order.vendor = vendor;
     order.approvalValue = approvalValue;
     order.takeout = takeout;
-    order.createdAt = new Date();
-    order.updatedAt = order.createdAt;
+    order.payState = false;
 
     return order;
   }
 }
-
-export default Orders;

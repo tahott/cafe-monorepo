@@ -2,9 +2,10 @@ import { Beverage, Size } from "@app/menu/beverage";
 import { DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { Expose, Transform, Type } from "class-transformer";
 import { ArrayNotEmpty, IsBoolean, IsEnum, IsNotEmpty, IsPositive, IsString, Max, ValidateNested } from "class-validator";
-import OrderEntity from './order.entity'
+import { OrderEntity } from './order.entity'
+import { OrderItemEntity } from "./orderItem.entity";
 
-export class Order {
+export class OrderItem {
   @IsEnum(Beverage.toEnum())
   name: Beverage;
 
@@ -30,11 +31,11 @@ export class Payment {
   approvalValue: string;
 }
 
-export class OrderRequest {
+export class OrderDto {
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
-  @Type(() => Order)
-  order: Order[];
+  @Type(() => OrderItem)
+  order: OrderItem[];
 
   @Expose()
   @ValidateNested()
@@ -49,12 +50,17 @@ export class OrderRequest {
   @Transform(() => LocalDateTime.parse(LocalDateTime.now().toString()).format(DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm:ss.SSS')))
   orderCreatedAt: LocalDateTime;
 
-  toEntity(): OrderEntity {
+  toOrderEntity(): OrderEntity {
     return OrderEntity.new(
-      this.order,
       this.payment.vendor,
       this.payment.approvalValue,
       this.takeout,
     );
+  }
+
+  toOrderItemEntity(): OrderItemEntity[] {
+    return this.order.map((item) => {
+      return OrderItemEntity.new(item);
+    })
   }
 }

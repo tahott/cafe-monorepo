@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, OnModuleDestroy, OnModuleInit, Post } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { OrderRequest } from './order.dto';
+import { OrderDto } from './order.dto';
 import { OrderService } from './order.service';
 
 @Controller('order')
@@ -24,8 +24,13 @@ export class OrderController implements OnModuleInit, OnModuleDestroy {
   }
 
   @Post()
-  async order(@Body() order: OrderRequest) {
-    return await this.orderService.insertOrder(order.toEntity());
+  async order(
+    @Body() order: OrderDto,
+  ) {
+    return await this.orderService.insertOrder(
+      order.toOrderEntity(),
+      order.toOrderItemEntity(),
+    );
     // return this.client.send('order', JSON.parse(JSON.stringify(order)));
   }
 }

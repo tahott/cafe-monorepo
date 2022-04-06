@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { OrderController } from './order.controller';
-import Order from './order.entity';
+import { OrderEntity } from './order.entity';
 import { OrderService } from './order.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { OrderItemEntity } from './orderItem.entity';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         },
       },
     ]),
-    TypeOrmModule.forFeature([Order]),
+    TypeOrmModule.forFeature([OrderEntity, OrderItemEntity]),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -30,8 +32,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: 'showmethemoney',
       database: 'cafe',
-      entities: [__dirname + '/order.entity.{ts,js}'],
+      entities: [__dirname + '/*.entity.{ts,js}'],
       synchronize: true,
+      namingStrategy: new SnakeNamingStrategy(),
     }),
   ],
   controllers: [OrderController],
