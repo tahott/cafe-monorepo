@@ -1,34 +1,76 @@
-import { convert, LocalDate, LocalDateTime } from '@js-joda/core';
-import { Injectable } from '@nestjs/common';
+import { convert, LocalDateTime } from '@js-joda/core';
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
+import { OrderDto } from './order.dto';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
 
 @Injectable()
-export class OrderService {
+export class OrderService implements OnModuleInit, OnModuleDestroy {
   constructor(
     @InjectRepository(OrderEntity)
     private readonly orderRepository: Repository<OrderEntity>,
     @InjectRepository(OrderItemEntity)
-    private readonly orderItemRepository: Repository<OrderItemEntity>
-  ) {
-
+    private readonly orderItemRepository: Repository<OrderItemEntity>,
+    @Inject('MY-CAFE-ORDER') private readonly client: ClientKafka,
+  ) {}
+  async onModuleInit() {
+    this.client.subscribeToResponseOf('order');
+    await this.client.connect();
   }
+
+  async onModuleDestroy() {
+    await this.client.close();
+  }
+
   getHello(): string {
     return 'Hello World!';
   }
 
-  async insertOrder(order: OrderEntity, items: OrderItemEntity[]) {
-    const now = LocalDate.now();
+  async order(order: OrderDto) {
+    // insert pre-order
+    const preOrder = await this.insertOrder(order.toOrderEntity(), order.toOrderItemEntity());
+
+    // send payment
+    const resPayment = await this.sendPayment(order);
+
+    // update order (order finished or canceld)
+    resPayment.forEach(async value => {
+      value.paymentResult
+        ? await this.updateOrder(preOrder.no, true)
+        : await this.updateOrder(preOrder.no, false);
+      
+      return Object.assign(order, value);
+    });
+
+    // return: make receipt
+    return Object.assign(order, { orderNo: preOrder.no.slice(-3) });
+  }
+
+  private async sendPayment(order: OrderDto) {
+    return await this.client.send('order', JSON.parse(JSON.stringify(order)));
+  }
+
+  private async insertOrder(order: OrderEntity, items: OrderItemEntity[]) {
+    const now = LocalDateTime.now();
     order.no = `${now.year()}${now.monthValue().toString().padStart(2, '0')}${now.dayOfMonth().toString().padStart(2, '0')}${await (await this.getOrderNo()).padStart(4, '0')}`;
-    
+
     await this.orderRepository.insert(order);
     await this.orderItemRepository.insert(items.map(item => {
       item.orderNo = order.no;
       return item;
     }));
+
     return order;
+  }
+
+  private async updateOrder(orderNo: string, payState: boolean = false) {
+    console.log(orderNo, payState);
+    payState
+      ? await this.orderRepository.update({ no: orderNo }, { payState: true, updatedAt: LocalDateTime.now() })
+      : await this.orderRepository.update({ no: orderNo }, { canceledAt: LocalDateTime.now() });
   }
 
   private async getOrderNo(): Promise<string> {
@@ -38,8 +80,8 @@ export class OrderService {
     const count = await createQueryBuilder(OrderEntity)
       .select()
       .where('created_at BETWEEN :fromDate AND :toDate', { fromDate: convert(fromDate).toDate(), toDate: convert(toDate).toDate() })
-      .getCount()
+      .getCount();
 
-    return count.toString();
+    return (count + 1).toString();
   }
 }

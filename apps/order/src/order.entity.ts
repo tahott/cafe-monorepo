@@ -1,9 +1,12 @@
 import { convert, LocalDateTime, nativeJs } from "@js-joda/core";
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryColumn, ValueTransformer } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn, ValueTransformer } from "typeorm";
 import { OrderItemEntity } from "./orderItem.entity";
 
 class DateTimeTransformer implements ValueTransformer {
-  to(entityValue: LocalDateTime): Date {
+  to(entityValue: LocalDateTime): Date | null {
+    if (!entityValue) {
+      return null;
+    }
     return convert(entityValue).toDate();
   }
   from(dbValue: Date) {
@@ -13,10 +16,11 @@ class DateTimeTransformer implements ValueTransformer {
 
 @Entity('order')
 export class OrderEntity {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: number;
+
   @OneToMany(type => OrderItemEntity, orderItem => orderItem.orderNo)
-  @PrimaryColumn({
-    type: 'nvarchar', length: 12, nullable: false,
-  })
+  @Column({ type: 'nvarchar', length: 12, nullable: false, unique: true })
   no: string;
 
   @Column()
@@ -44,6 +48,13 @@ export class OrderEntity {
     nullable: false,
   })
   updatedAt: LocalDateTime;
+
+  @Column({
+    type: 'timestamp',
+    transformer: new DateTimeTransformer(),
+    nullable: true,
+  })
+  canceledAt: LocalDateTime;
 
   @BeforeInsert()
   protected beforeInsert() {

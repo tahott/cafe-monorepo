@@ -14,11 +14,11 @@ class DateTimeTransformer implements ValueTransformer {
 
 @Entity('order_item')
 export class OrderItemEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint'})
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @ManyToOne(type => OrderEntity, order => order.no)
-  @JoinColumn()
+  @JoinColumn({ referencedColumnName: 'no' })
   orderNo: string;
 
   @Column({ type: 'nvarchar', length: 40, nullable: false })
