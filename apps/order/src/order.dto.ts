@@ -38,6 +38,7 @@ export class OrderDto {
   order: OrderItem[];
 
   @Expose()
+  @IsNotEmpty()
   @ValidateNested()
   @Type(() => Payment)
   payment: Payment;
@@ -62,5 +63,19 @@ export class OrderDto {
     return this.order.map((item) => {
       return OrderItemEntity.new(item);
     })
+  }
+}
+
+export class OrderResponseDto {
+  @Expose() order: OrderItem[];
+  @Expose() takeout: boolean;
+  @Expose() orderCreatedAt: LocalDateTime;
+  @Expose() orderNo: string;
+
+  constructor(order: OrderDto, orderNo: string) {
+    this.order = order.order;
+    this.takeout = order.takeout;
+    this.orderNo = orderNo;
+    this.orderCreatedAt = order.orderCreatedAt;
   }
 }

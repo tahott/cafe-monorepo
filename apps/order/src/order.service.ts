@@ -3,7 +3,7 @@ import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/commo
 import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
-import { OrderDto } from './order.dto';
+import { OrderDto, OrderResponseDto } from './order.dto';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
 
@@ -46,7 +46,7 @@ export class OrderService implements OnModuleInit, OnModuleDestroy {
     });
 
     // return: make receipt
-    return Object.assign(order, { orderNo: preOrder.no.slice(-3) });
+    return new OrderResponseDto(order, preOrder.no.slice(-3));
   }
 
   private async sendPayment(order: OrderDto) {
