@@ -1,6 +1,7 @@
 import { convert, LocalDateTime } from '@js-joda/core';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
+import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { OrderDto, OrderResponseDto } from './order.dto';
@@ -34,22 +35,20 @@ export class OrderService implements OnModuleInit, OnModuleDestroy {
     const preOrder = await this.insertOrder(order.toOrderEntity(), order.toOrderItemEntity());
 
     // send payment
-    const resPayment = await this.sendPayment(order);
-
-    // update order (order finished or canceld)
-    resPayment.forEach(async value => {
-      value.paymentResult
-        ? await this.updateOrder(preOrder.no, true)
-        : await this.updateOrder(preOrder.no, false);
-      
-      return Object.assign(order, value);
-    });
-
-    // return: make receipt
-    return new OrderResponseDto(order, preOrder.no.slice(-3));
+    return await this.sendPayment(new OrderResponseDto(order, preOrder.no.slice(-4)));
   }
 
-  private async sendPayment(order: OrderDto) {
+  async updatePaymentOrder(originMessage: KafkaMessage) {
+    const orderResult = JSON.parse(JSON.stringify(originMessage.value));
+    const now = LocalDateTime.now();
+    const orderNo = `${now.year()}${now.monthValue().toString().padStart(2, '0')}${now.dayOfMonth().toString().padStart(2, '0')}${orderResult.orderNo}`;
+
+    orderResult.paymentResult
+      ? await this.updateOrder(orderNo, true)
+      : await this.updateOrder(orderNo, false)
+  }
+
+  private async sendPayment(order: OrderResponseDto) {
     return await this.client.send('order', JSON.parse(JSON.stringify(order)));
   }
 
