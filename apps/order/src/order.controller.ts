@@ -1,3 +1,4 @@
+import { Beverage } from '@app/menu/beverage';
 import { Body, Controller, Get, Inject, Post, Sse } from '@nestjs/common';
 import { ClientKafka, Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
 import { interval, map, Observable } from 'rxjs';
@@ -11,8 +12,8 @@ export class OrderController {
     @Inject('MY-CAFE-ORDER') private readonly client: ClientKafka,
   ) { }
   @Get()
-  getHello() {
-    return this.orderService.getHello();
+  async menu() {
+    return this.orderService.getMenu();
   }
 
   @Post()

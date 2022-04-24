@@ -31,6 +31,6 @@ export class BaristaController {
 
   @Sse()
   sse(): Observable<MessageEvent> {
-    return interval(3000).pipe(map(() => ({ data: BaristaService.shiftPickUpOrder() } as MessageEvent)));
+    return interval(10000).pipe(map(() => ({ data: BaristaService.shiftPickUpOrder().join(',') } as MessageEvent )));
   }
 }

@@ -1,4 +1,4 @@
-import { Beverage, Size } from "@app/menu/beverage";
+import { Beverage, BeverageType, Size } from "@app/menu/beverage";
 import { DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { Expose, Transform, Type } from "class-transformer";
 import { ArrayNotEmpty, IsBoolean, IsEnum, IsNotEmpty, IsPositive, IsString, Max, ValidateNested } from "class-validator";
@@ -7,7 +7,7 @@ import { OrderItemEntity } from "./orderItem.entity";
 
 export class OrderItem {
   @IsEnum(Beverage.toEnum())
-  name: Beverage;
+  name: string;
 
   @Transform((property) => property.value.toLowerCase())
   @IsEnum(Size)
@@ -77,5 +77,17 @@ export class OrderResponseDto {
     this.takeout = order.takeout;
     this.orderNo = orderNo;
     this.orderCreatedAt = order.orderCreatedAt;
+  }
+}
+
+export class MenuResponseDto {
+  @Expose() type: BeverageType;
+  @Expose() name: string;
+  @Expose() price: number;
+
+  constructor(beverage: Beverage) {
+    this.type = beverage.type;
+    this.name = beverage.name;
+    this.price = beverage.price;
   }
 }
