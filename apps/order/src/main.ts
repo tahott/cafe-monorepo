@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { NewrelicInterceptor } from './newrelic.interceptor';
 import { OrderModule } from './order.module';
 
 async function bootstrap() {
@@ -24,6 +25,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
   }));
+  app.useGlobalInterceptors(new NewrelicInterceptor());
 
   await app.startAllMicroservices();
 
