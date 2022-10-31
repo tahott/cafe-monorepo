@@ -6,6 +6,7 @@ import { OrderService } from './order.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrderItemEntity } from './orderItem.entity';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OrderItemEntity } from './orderItem.entity';
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    LoggerModule.forRoot(),
   ],
   controllers: [OrderController],
   providers: [OrderService],

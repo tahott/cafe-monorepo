@@ -1,11 +1,13 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Logger } from 'nestjs-pino';
 import { NewrelicInterceptor } from './newrelic.interceptor';
 import { OrderModule } from './order.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(OrderModule);
+  const app = await NestFactory.create(OrderModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,

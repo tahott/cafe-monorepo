@@ -14,13 +14,18 @@ exports.config = {
    * Your New Relic license key.
    */
   license_key: process.env.LICENSE_KEY,
+  application_logging: {
+    forwarding: {
+      enabled: true
+    }
+  },
   logging: {
     /**
      * Level at which to log. 'trace' is most useful to New Relic when diagnosing
      * issues with the agent, 'info' and higher will impose the least overhead on
      * production applications.
      */
-    level: 'info'
+    level: 'info',
   },
   /**
    * When true, all request headers except for those listed in attributes.exclude
