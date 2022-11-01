@@ -1008,6 +1008,11 @@
     nan "^2.16.0"
     semver "^5.5.1"
 
+"@newrelic/pino-enricher@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@newrelic/pino-enricher/-/pino-enricher-1.1.0.tgz#07d07fee3ce264385762f08fd96feacff6803c15"
+  integrity sha512-Rbec9zqiKGYEI/lofE5ErPYqO8biMxdjgny9KzfEhSdilaf0HsXm5EnK0jAdqfoxO2unH3tkHeZ5j9I4R2f8Cw==
+
 "@newrelic/superagent@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@newrelic/superagent/-/superagent-6.0.0.tgz#8aee871547ebea90fcb37f98ea38d820cc1bc67b"
@@ -2395,7 +2400,7 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dotenv@^16.0.0:
+dotenv@^16.0.0, dotenv@^16.0.3:
   version "16.0.3"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
   integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
@@ -2769,13 +2774,6 @@ fast-safe-stringify@2.1.1, fast-safe-stringify@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.1.1.tgz#c406a83b6e70d9e35ce3b30a81141df30aeba884"
   integrity sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==
-
-fast-url-parser@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/fast-url-parser/-/fast-url-parser-1.1.3.tgz#f4af3ea9f34d8a271cf58ad2b3759f431f0b318d"
-  integrity sha512-5jOCVXADYNuRkKFzNJ0dCCewsZiYo0dz8QNYljkOpFC6r2U4OBmKtvm/Tsuh4w1YYdDqDb31a8TVhBJ2OJKdqQ==
-  dependencies:
-    punycode "^1.3.2"
 
 fastq@^1.6.0:
   version "1.13.0"
@@ -4148,15 +4146,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nestjs-pino@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/nestjs-pino/-/nestjs-pino-3.1.1.tgz#ae313d387ae879be511b8af006f905976467f3bc"
-  integrity sha512-T7ajfqYTSHKrirzrElQJ3EWO/OZF5fFFkgaRvD+I7F5YY2hU3X295E/CnTkgpHZozL0s/3Ud4OtTZlT3NisTBw==
-
-newrelic@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-9.3.0.tgz#5b7e4dae9085ef80ff4b2d3e7a8fdd5440e58ec4"
-  integrity sha512-JZOaHxutifptHg1Vm+ixlN6wjUZnz5Tz4XX8lzMz/THxIO0686QLlfkQA/zlzwr+EvO3vBdofFNhMTYSIgeALg==
+newrelic@^9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-9.5.0.tgz#b420b8ade929392d02c630c5f512a5201f01d38f"
+  integrity sha512-PqMhX3IURa9Dr18J4U6Dfi6Lrkg1bKBm+bEu/EpivgHH7qOPzSmtNcimEj9Y2KSkyUaH/gdNhaQBjBF0zDlrjw==
   dependencies:
     "@grpc/grpc-js" "^1.5.5"
     "@grpc/proto-loader" "^0.6.13"
@@ -4425,23 +4418,12 @@ pino-abstract-transport@v1.0.0:
     readable-stream "^4.0.0"
     split2 "^4.0.0"
 
-pino-http@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.yarnpkg.com/pino-http/-/pino-http-8.2.1.tgz#24df377d7681a9c57318f6ecc4ac7c09327f1c8e"
-  integrity sha512-bdWAE4HYfFjDhKw2/N7BLNSIFAs+WDLZnetsGRpBdNEKq7/RoZUgblLS5OlMY257RPQml6J5QiiLkwxbstzWbA==
-  dependencies:
-    fast-url-parser "^1.1.3"
-    get-caller-file "^2.0.5"
-    pino "^8.0.0"
-    pino-std-serializers "^6.0.0"
-    process-warning "^2.0.0"
-
 pino-std-serializers@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-6.0.0.tgz#4c20928a1bafca122fdc2a7a4a171ca1c5f9c526"
   integrity sha512-mMMOwSKrmyl+Y12Ri2xhH1lbzQxwwpuru9VjyJpgFIH4asSj88F2csdMwN6+M5g1Ll4rmsYghHLQJw81tgZ7LQ==
 
-pino@^8.0.0:
+pino@^8.7.0:
   version "8.7.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-8.7.0.tgz#58621608a3d8540ae643cdd9194cdd94130c78d9"
   integrity sha512-l9sA5uPxmZzwydhMWUcm1gI0YxNnYl8MfSr2h8cwLvOAzQLBLewzF247h/vqHe3/tt6fgtXeG9wdjjoetdI/vA==
@@ -4581,11 +4563,6 @@ pump@^3.0.0:
   dependencies:
     end-of-stream "^1.1.0"
     once "^1.3.1"
-
-punycode@^1.3.2:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
-  integrity sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==
 
 punycode@^2.1.0:
   version "2.1.1"

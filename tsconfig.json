@@ -20,6 +20,12 @@
     "paths": {
       "@app/menu/*": [
         "libs/menu/src/*"
+      ],
+      "@app/logger": [
+        "libs/logger/src"
+      ],
+      "@app/logger/*": [
+        "libs/logger/src/*"
       ]
     }
   }

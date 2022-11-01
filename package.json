@@ -28,13 +28,14 @@
     "@nestjs/platform-express": "^9.1.4",
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/typeorm": "^9.0.1",
+    "@newrelic/pino-enricher": "^1.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "dotenv": "^16.0.3",
     "kafkajs": "^2.2.2",
     "mysql2": "^2.3.3",
-    "nestjs-pino": "^3.1.1",
-    "newrelic": "^9.3.0",
-    "pino-http": "^8.2.1",
+    "newrelic": "^9.5.0",
+    "pino": "^8.7.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -87,7 +88,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/menu(|/.*)$": "<rootDir>/libs/menu/src/$1"
+      "^@app/menu(|/.*)$": "<rootDir>/libs/menu/src/$1",
+      "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
     }
   }
 }
