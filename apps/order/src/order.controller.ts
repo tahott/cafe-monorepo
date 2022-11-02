@@ -1,8 +1,7 @@
-import { Beverage } from '@app/menu/beverage';
-import { Body, Controller, Get, Inject, Logger, Post, Sse } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Sse } from '@nestjs/common';
 import { ClientKafka, Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
-import { PinoLogger } from 'nestjs-pino';
 import { interval, map, Observable } from 'rxjs';
+import { LoggerService } from '@app/logger';
 import { OrderDto } from './order.dto';
 import { OrderService } from './order.service';
 
@@ -11,11 +10,10 @@ export class OrderController {
   constructor(
     private readonly orderService: OrderService,
     @Inject('MY-CAFE-ORDER') private readonly client: ClientKafka,
-    private readonly logger: PinoLogger,
+    private readonly logger: LoggerService,
   ) { }
   @Get()
   async menu() {
-    this.logger.info('api call');
     return this.orderService.getMenu();
   }
 

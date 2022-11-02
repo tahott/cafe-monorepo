@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { LoggerModule } from '@app/logger';
 import { OrderController } from './order.controller';
 import { OrderEntity } from './order.entity';
 import { OrderService } from './order.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrderItemEntity } from './orderItem.entity';
-import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { LoggerModule } from 'nestjs-pino';
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
-    LoggerModule.forRoot(),
+    LoggerModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

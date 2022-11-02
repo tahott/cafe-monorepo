@@ -1,10 +1,13 @@
-import { Beverage } from '@app/menu/beverage';
-import { convert, LocalDateTime } from '@js-joda/core';
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface';
 import { InjectRepository } from '@nestjs/typeorm';
+import { convert, LocalDateTime } from '@js-joda/core';
 import { createQueryBuilder, Repository } from 'typeorm';
+
+import { LoggerService } from '@app/logger';
+import { Beverage } from '@app/menu/beverage';
+
 import { MenuResponseDto, OrderDto, OrderResponseDto } from './order.dto';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
@@ -17,6 +20,7 @@ export class OrderService implements OnModuleInit, OnModuleDestroy {
     @InjectRepository(OrderItemEntity)
     private readonly orderItemRepository: Repository<OrderItemEntity>,
     @Inject('MY-CAFE-ORDER') private readonly client: ClientKafka,
+    private readonly logger: LoggerService,
   ) {}
   async onModuleInit() {
     this.client.subscribeToResponseOf('order');
