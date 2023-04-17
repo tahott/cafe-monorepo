@@ -1,9 +1,8 @@
-import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { convert, LocalDateTime } from '@js-joda/core';
-import { createQueryBuilder, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { LoggerService } from '@app/logger';
 import { Beverage } from '@app/menu/beverage';
@@ -11,24 +10,20 @@ import { Beverage } from '@app/menu/beverage';
 import { MenuResponseDto, OrderDto, OrderResponseDto } from './order.dto';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
+import { StreamHandlerService } from '@app/redis/stream-handler.service';
 
 @Injectable()
-export class OrderService implements OnModuleInit, OnModuleDestroy {
+export class OrderService implements OnModuleInit {
   constructor(
     @InjectRepository(OrderEntity)
     private readonly orderRepository: Repository<OrderEntity>,
     @InjectRepository(OrderItemEntity)
     private readonly orderItemRepository: Repository<OrderItemEntity>,
-    @Inject('MY-CAFE-ORDER') private readonly client: ClientKafka,
+    private readonly streamService: StreamHandlerService,
     private readonly logger: LoggerService,
   ) {}
   async onModuleInit() {
-    this.client.subscribeToResponseOf('order');
-    await this.client.connect();
-  }
-
-  async onModuleDestroy() {
-    await this.client.close();
+    console.log(await this.streamService.ping());
   }
 
   getMenu(): MenuResponseDto[] {
@@ -54,7 +49,7 @@ export class OrderService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async sendPayment(order: OrderResponseDto) {
-    return await this.client.send('order', JSON.parse(JSON.stringify(order)));
+    await this.streamService.addToStream(JSON.parse(JSON.stringify(order)), 'order');
   }
 
   private async insertOrder(order: OrderEntity, items: OrderItemEntity[]) {
@@ -81,11 +76,15 @@ export class OrderService implements OnModuleInit, OnModuleDestroy {
     const fromDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
     const toDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(0);
 
-    const count = await createQueryBuilder(OrderEntity)
-      .select()
-      .where('created_at BETWEEN :fromDate AND :toDate', { fromDate: convert(fromDate).toDate(), toDate: convert(toDate).toDate() })
-      .getCount();
+    try {
+      const count = await this.orderRepository.createQueryBuilder().
+        select().
+        where('created_at BETWEEN :fromDate AND :toDate', { fromDate: convert(fromDate).toDate(), toDate: convert(toDate).toDate() }).
+        getCount();
 
-    return (count + 1).toString();
+      return (count + 1).toString();
+    } catch (err) {
+      return '1';
+    }
   }
 }

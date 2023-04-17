@@ -4,6 +4,7 @@ import { OrderItemEntity } from "./orderItem.entity";
 
 class DateTimeTransformer implements ValueTransformer {
   to(entityValue: LocalDateTime): Date | null {
+    console.log(entityValue)
     if (!entityValue) {
       return null;
     }
@@ -40,14 +41,14 @@ export class OrderEntity {
     transformer: new DateTimeTransformer(),
     nullable: false,
   })
-  createdAt: LocalDateTime;
+  createdAt: LocalDateTime | Date;
 
   @Column({
     type: 'timestamp',
     transformer: new DateTimeTransformer(),
     nullable: false,
   })
-  updatedAt: LocalDateTime;
+  updatedAt: LocalDateTime | Date;
 
   @Column({
     type: 'timestamp',
