@@ -3,6 +3,7 @@ import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { convert, LocalDateTime } from '@js-joda/core';
 import { Repository } from 'typeorm';
+import * as os from 'os';
 
 import { LoggerService } from '@app/logger';
 import { Beverage } from '@app/menu/beverage';
@@ -13,7 +14,7 @@ import { OrderItemEntity } from './orderItem.entity';
 import { StreamHandlerService } from '@app/redis/stream-handler.service';
 
 @Injectable()
-export class OrderService implements OnModuleInit {
+export class OrderService {
   constructor(
     @InjectRepository(OrderEntity)
     private readonly orderRepository: Repository<OrderEntity>,
@@ -21,10 +22,7 @@ export class OrderService implements OnModuleInit {
     private readonly orderItemRepository: Repository<OrderItemEntity>,
     private readonly streamService: StreamHandlerService,
     private readonly logger: LoggerService,
-  ) {}
-  async onModuleInit() {
-    console.log(await this.streamService.ping());
-  }
+  ) { }
 
   getMenu(): MenuResponseDto[] {
     return Beverage.toMenu().map(menu => new MenuResponseDto(menu));
@@ -66,7 +64,6 @@ export class OrderService implements OnModuleInit {
   }
 
   private async updateOrder(orderNo: string, payState: boolean = false) {
-    console.log(orderNo, payState);
     payState
       ? await this.orderRepository.update({ no: orderNo }, { payState: true, updatedAt: LocalDateTime.now() })
       : await this.orderRepository.update({ no: orderNo }, { canceledAt: LocalDateTime.now() });

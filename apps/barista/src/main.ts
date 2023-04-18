@@ -5,22 +5,7 @@ import { BaristaModule } from './barista.module';
 async function bootstrap() {
   const app = await NestFactory.create(BaristaModule);
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'my-cafe',
-        brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'cafe-barista',
-      },
-    }
-  });
-
   app.enableCors();
-
-  await app.startAllMicroservices();
 
   await app.listen(3002);
 
